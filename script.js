@@ -12,14 +12,32 @@
   const WEB3FORMS_KEY = EMAIL_CFG.web3formsKey || '';
   const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
 
-  // Page loader
+  // Show content immediately — prevents blank hero on mobile if animations fail
+  document.body.classList.add('loaded');
+
+  function revealInViewport() {
+    document.querySelectorAll('.reveal:not(.revealed)').forEach(function (el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92) {
+        el.classList.add('revealed');
+      }
+    });
+  }
+
+  // Page loader — always hide even if external assets are slow
   const pageLoader = document.getElementById('pageLoader');
+
+  function hidePageLoader() {
+    if (pageLoader) {
+      pageLoader.classList.add('hidden');
+    }
+  }
+
   if (pageLoader) {
     window.addEventListener('load', function () {
-      setTimeout(function () {
-        pageLoader.classList.add('hidden');
-      }, 600);
+      setTimeout(hidePageLoader, 400);
     });
+    setTimeout(hidePageLoader, 2500);
   }
 
   // Subtle hero parallax
@@ -60,6 +78,8 @@
 
   // Header scroll effect
   function handleScroll() {
+    if (!header) return;
+
     const hero = document.getElementById('home');
     const heroBottom = hero ? hero.offsetHeight : 0;
     const scrollY = window.scrollY;
@@ -257,6 +277,9 @@
     revealObserver.observe(el);
   });
 
+  revealInViewport();
+  window.addEventListener('load', revealInViewport);
+
   function animateCounter(el) {
     const target = parseInt(el.getAttribute('data-target'), 10);
     const duration = 2000;
@@ -297,7 +320,7 @@
     const minsEl = document.getElementById('cd-mins');
     const secsEl = document.getElementById('cd-secs');
 
-    if (!daysEl) return;
+    if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
 
     if (diff <= 0) {
       daysEl.textContent = '00';
@@ -356,5 +379,4 @@
   }
 
   window.addEventListener('scroll', highlightNav, { passive: true });
-  document.body.classList.add('loaded');
 })();

@@ -2008,23 +2008,27 @@ body.menu-open {
   }
 
   .hero {
-    min-height: auto;
+    min-height: 100svh;
+    min-height: 100dvh;
     padding: 108px 0 64px;
     align-items: flex-start;
   }
 
-  .hero-logo-watermark {
-    width: min(360px, 85vw);
-    opacity: 0.035;
-  }
-
   .hero-grid {
     gap: 36px;
+    width: 100%;
   }
 
   .hero-content {
     max-width: none;
     text-align: center;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hero-logo-watermark {
+    width: min(360px, 85vw);
+    opacity: 0.035;
   }
 
   .hero-badge {
@@ -2547,7 +2551,15 @@ body:not(.loaded) .animate-on-load {
   transform: translateY(30px);
 }
 
+/* Content visible by default when JS is unavailable */
+html:not(.js) .animate-on-load {
+  opacity: 1;
+  transform: none;
+}
+
 body.loaded .animate-on-load {
+  opacity: 1;
+  transform: translateY(0);
   animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
@@ -2575,6 +2587,19 @@ body.loaded .animate-on-load.delay-2 {
 .reveal.revealed {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-load,
+  body:not(.loaded) .animate-on-load,
+  body.loaded .animate-on-load,
+  .reveal,
+  .reveal.revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 .nav-links a.active {
